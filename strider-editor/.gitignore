@@ -4,3 +4,4 @@ input/*.mov
 input/*.mp4
 output/
 frames/
+input/*.wav
