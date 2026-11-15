@@ -21,6 +21,16 @@ const renderers = {
   hierarchy: require('./renderers/hierarchy'),
   logo: require('./renderers/logo'),
   closer: require('./renderers/closer'),
+  lower_third: require('./renderers/lower_third'),
+  kinetic_words: require('./renderers/kinetic_words'),
+  heartbeat: require('./renderers/heartbeat'),
+  icon_chips: require('./renderers/icon_chips'),
+  flip_reveal: require('./renderers/flip_reveal'),
+  calendar_fill: require('./renderers/calendar_fill'),
+  brain_layers: require('./renderers/brain_layers'),
+  glitch_split: require('./renderers/glitch_split'),
+  counter_echo: require('./renderers/counter_echo'),
+  absorb_stamp: require('./renderers/absorb_stamp'),
 };
 
 const BW = 'colorchannelmixer=.3:.4:.3:0:.3:.4:.3:0:.3:.4:.3';
@@ -102,13 +112,11 @@ async function main() {
   const m = t => mapper.map(t);
   const segs = cfg.segments.map(s => {
     const r = { ...s, outStart: m(s.start), outEnd: s.end >= cfg.range[1] ? duration : m(s.end) };
-    if (s.emphasis_at != null) r.emphasisAtOut = m(s.emphasis_at);
-    if (s.big_at != null) r.bigAtOut = m(s.big_at);
-    if (s.small2_at != null) r.small2AtOut = m(s.small2_at);
-    if (s.line2_at != null) r.line2AtOut = m(s.line2_at);
-    if (s.lines && typeof s.lines[0] === 'object') r.lines = s.lines.map(l => ({ ...l, atOut: m(l.at) }));
-    if (s.items) r.items = s.items.map(i => ({ ...i, atOut: m(i.at) }));
-    if (s.stages) r.stages = s.stages.map(st => ({ ...st, atOut: m(st.at) }));
+    // qualquer campo "<nome>_at" vira "<nomeCamel>AtOut"; arrays de objetos com "at" ganham "atOut"
+    for (const [k, v] of Object.entries(s)) {
+      if (k.endsWith('_at') && typeof v === 'number') r[k.slice(0, -3).replace(/_(\w)/g, (_, c) => c.toUpperCase()) + 'AtOut'] = m(v);
+      if (Array.isArray(v) && v.length && typeof v[0] === 'object' && v[0].at != null) r[k] = v.map(o => ({ ...o, atOut: m(o.at) }));
+    }
     return r;
   });
   const hidden = t => segs.some(s => s.hide_captions && t >= s.outStart && t < s.outEnd);
@@ -127,6 +135,7 @@ async function main() {
     if (s.type === 'checkbox_card') s.items.forEach(i => ev.push(i.highlight ? { type: 'chime', t: i.atOut, gain: 2.5 } : { type: 'tick', t: i.atOut, gain: 3 }));
     if (s.type === 'gauge') s.stages.slice(1).forEach(st => ev.push({ type: 'whoosh', t: st.atOut - 0.05, gain: 0.7 }));
     if (s.type === 'hierarchy') { ev.push({ type: 'boom', t: s.bigAtOut, gain: 0.8 }); if (s.small2AtOut) ev.push({ type: 'tick', t: s.small2AtOut, gain: 3 }); }
+    if (renderers[s.type] && renderers[s.type].sfx) ev.push(...renderers[s.type].sfx(s));
     if (s.type === 'closer') ev.push({ type: 'boom', t: s.line2AtOut }, { type: 'chime', t: s.line2AtOut + 0.05, gain: 0.8 });
   });
   const sfxFile = path.join(outDir, 'sfx.wav');
