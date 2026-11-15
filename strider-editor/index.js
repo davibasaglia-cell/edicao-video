@@ -10,6 +10,11 @@ const ROOT = __dirname;
 const cfgPath = process.argv.find(a => a.endsWith('.json')) || path.join(ROOT, 'config.json');
 const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
 const SKIP_BASE = process.argv.includes('--skip-base');
+// --takes            → só os takes das animações (para aprovação antes do render completo)
+// --takes=2,5        → só os takes 2 e 5 (numeração = ordem dos segmentos no config)
+const TAKES_ARG = process.argv.find(a => a.startsWith('--takes'));
+const TAKES = !!TAKES_ARG;
+const TAKES_ONLY = TAKES_ARG && TAKES_ARG.includes('=') ? TAKES_ARG.split('=')[1].split(',').map(Number) : null;
 const R = p => path.isAbsolute(p) ? p : path.join(ROOT, p);
 
 const renderers = {
@@ -167,49 +172,100 @@ async function main() {
       '-map', '[bv]', '-map', '[ba]', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '14', '-pix_fmt', 'yuv420p', '-c:a', 'pcm_s16le', '-ar', '48000', base]);
   }
 
-  // 6. Overlays (node-canvas → pipe RGBA) + mix final
-  console.log('→ Renderizando overlays + vídeo final...');
-  const totalFrames = Math.round(duration * fps);
+  // 6. Overlays (node-canvas → pipe RGBA) + mix. renderClip serve tanto para o vídeo final quanto para os takes.
   const canvas = createCanvas(W, H);
   const ctx = canvas.getContext('2d');
   const empty = Buffer.alloc(W * H * 4);
-  const output = R(cfg.output);
   const sfxCfg = { volume: 0.22, duck: true, ...(cfg.sfx || {}) };
-  const fc = [
-    `[1:v]format=bgra[ov]`,
-    `[0:v][ov]overlay=0:0:alpha=premultiplied:format=auto:eof_action=pass,format=yuv420p[v]`,
-    `[0:a]highpass=f=70,afftdn=nf=-28,loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,asplit=2[voz][vozkey]`,
-    // SFX sempre ABAIXO da voz: volume reduzido + ducking (comprime os efeitos quando há fala)
-    `[2:a]volume=${sfxCfg.volume}[sfxv]`,
-    sfxCfg.duck ? `[sfxv][vozkey]sidechaincompress=threshold=0.02:ratio=10:attack=5:release=300:makeup=1[sfx]` : `[sfxv]anull[sfx];[vozkey]anullsink`,
-    `[voz][sfx]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]`,
-  ].join(';');
-  let ff;
-  const done = run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-stats',
-    '-i', base,
-    '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s', `${W}x${H}`, '-r', String(fps), '-i', 'pipe:0',
-    '-i', sfxFile,
-    '-filter_complex', fc, '-map', '[v]', '-map', '[a]', '-t', duration.toFixed(3),
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', '19', '-profile:v', 'high', '-pix_fmt', 'yuv420p',
-    '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709',
-    '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', output], { stdin: true, onSpawn: p => { ff = p; } });
 
-  for (let f = 0; f < totalFrames; f++) {
-    const t = f / fps;
-    const active = segs.filter(s => t >= s.outStart && t < s.outEnd && renderers[s.type]);
-    const capOn = !hidden(t) && captions.chunks.some(c => t >= c.start && t < c.end);
-    let buf = empty;
-    if (active.length || capOn) {
-      ctx.clearRect(0, 0, W, H);
-      active.forEach(s => { ctx.save(); renderers[s.type](ctx, s, t, W, H); ctx.restore(); });
-      if (capOn) { ctx.save(); renderers.subtitle(ctx, captions, t, W, H); ctx.restore(); }
-      buf = canvas.toBuffer('raw');
+  async function renderClip(t0, t1, output, opts = {}) {
+    const preview = !!opts.label;
+    const scaleOut = preview ? `,scale=${W / 2}:${H / 2}` : '';
+    const fc = [
+      `[1:v]format=bgra[ov]`,
+      `[0:v][ov]overlay=0:0:alpha=premultiplied:format=auto:eof_action=pass${scaleOut},format=yuv420p[v]`,
+      `[0:a]highpass=f=70,afftdn=nf=-28,loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,asplit=2[voz][vozkey]`,
+      // SFX sempre ABAIXO da voz: volume reduzido + ducking (comprime os efeitos quando há fala)
+      `[2:a]volume=${sfxCfg.volume}[sfxv]`,
+      sfxCfg.duck ? `[sfxv][vozkey]sidechaincompress=threshold=0.02:ratio=10:attack=5:release=300:makeup=1[sfx]` : `[sfxv]anull[sfx];[vozkey]anullsink`,
+      `[voz][sfx]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]`,
+    ].join(';');
+    const enc = preview
+      ? ['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p', '-r', String(fps), '-c:a', 'aac', '-b:a', '128k', '-ar', '48000']
+      : ['-c:v', 'libx264', '-preset', 'medium', '-crf', '19', '-profile:v', 'high', '-pix_fmt', 'yuv420p',
+         '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-c:a', 'aac', '-b:a', '192k'];
+    let ff;
+    const done = run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', ...(preview ? [] : ['-stats']),
+      '-ss', t0.toFixed(3), '-i', base,
+      '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s', `${W}x${H}`, '-r', String(fps), '-i', 'pipe:0',
+      '-ss', t0.toFixed(3), '-i', sfxFile,
+      '-filter_complex', fc, '-map', '[v]', '-map', '[a]', '-t', (t1 - t0).toFixed(3),
+      ...enc, '-movflags', '+faststart', output], { stdin: true, onSpawn: p => { ff = p; } });
+
+    const f0 = Math.round(t0 * fps), f1 = Math.round(t1 * fps);
+    for (let f = f0; f < f1; f++) {
+      const t = f / fps;
+      const active = segs.filter(s => t >= s.outStart && t < s.outEnd && renderers[s.type]);
+      const capOn = !hidden(t) && captions.chunks.some(c => t >= c.start && t < c.end);
+      let buf = empty;
+      if (active.length || capOn || preview) {
+        ctx.clearRect(0, 0, W, H);
+        active.forEach(s => { ctx.save(); renderers[s.type](ctx, s, t, W, H); ctx.restore(); });
+        if (capOn) { ctx.save(); renderers.subtitle(ctx, captions, t, W, H); ctx.restore(); }
+        if (preview) drawTakeLabel(ctx, opts.label, W, H);
+        buf = canvas.toBuffer('raw');
+      }
+      if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
     }
-    if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
+    ff.stdin.end();
+    await done;
   }
-  ff.stdin.end();
-  await done;
+
+  if (TAKES) {
+    // 7a. Takes: um clipe curto por animação (meia resolução, com áudio) + um reel com todos, para aprovação
+    const takesDir = path.join(outDir, 'takes');
+    fs.rmSync(takesDir, { recursive: true, force: true });
+    fs.mkdirSync(takesDir, { recursive: true });
+    const list = segs.map((s, i) => ({ s, i })).filter(({ i }) => !TAKES_ONLY || TAKES_ONLY.includes(i + 1));
+    const files = [];
+    for (const { s, i } of list) {
+      const t0 = Math.max(0, s.outStart - 0.4), t1 = Math.min(duration, s.outEnd + 0.3);
+      const file = path.join(takesDir, `take_${String(i + 1).padStart(2, '0')}_${s.type}.mp4`);
+      console.log(`  take ${i + 1}/${segs.length}: ${s.type} (${t0.toFixed(1)}s–${t1.toFixed(1)}s)`);
+      await renderClip(t0, t1, file, { label: `TAKE ${i + 1} · ${s.type.toUpperCase()} · ${fmtTime(s.outStart)}` });
+      files.push(file);
+    }
+    const listFile = path.join(takesDir, 'list.txt');
+    fs.writeFileSync(listFile, files.map(f => `file '${f}'`).join('\n'));
+    const reel = path.join(outDir, 'takes_reel.mp4');
+    await run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', listFile, '-c', 'copy', '-movflags', '+faststart', reel]);
+    console.log(`✅ Takes em ${takesDir}\n✅ Reel com todos os takes: ${reel}`);
+    return;
+  }
+
+  // 7b. Vídeo final
+  console.log('→ Renderizando overlays + vídeo final...');
+  const output = R(cfg.output);
+  await renderClip(0, duration, output);
   console.log(`✅ Vídeo salvo em ${output}`);
+}
+
+function fmtTime(t) { return `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0')}`; }
+
+// Etiqueta no canto dos takes para o usuário saber qual animação está vendo
+function drawTakeLabel(ctx, label, W, H) {
+  ctx.save();
+  ctx.font = '700 30px Inter';
+  const w = ctx.measureText(label).width + 40;
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.fillRect(24, H - 90, w, 56);
+  ctx.fillStyle = '#F5A020';
+  ctx.fillRect(24, H - 90, 8, 56);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  ctx.fillText(label, 48, H - 61);
+  ctx.restore();
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

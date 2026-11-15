@@ -22,7 +22,7 @@ function drawCakeIcon(ctx, cx, cy, s) {
   ctx.restore();
 }
 
-// Encerramento: overlay dourado + ícone + texto branco + palavra laranja gigante.
+// Encerramento: overlay dourado + (ícone opcional) + texto branco + palavra laranja gigante.
 module.exports = function closer(ctx, seg, t, W, H) {
   const local = t - seg.outStart;
   const ov = U.clamp(local / 0.2);
@@ -36,8 +36,10 @@ module.exports = function closer(ctx, seg, t, W, H) {
   ctx.restore();
 
   const cy = H * 0.5;
+  // ícone opcional e só quando tem a ver com o tema ("icon": "cake"); padrão: sem ícone
+  const icon = { cake: drawCakeIcon }[seg.icon];
   const iconIn = U.popIn(local, 99, null, { from: 0.6 });
-  U.withTransform(ctx, W / 2, cy - 330, iconIn.scale, iconIn.alpha, () => drawCakeIcon(ctx, W / 2, cy - 330, 1.25));
+  if (icon) U.withTransform(ctx, W / 2, cy - 330, iconIn.scale, iconIn.alpha, () => icon(ctx, W / 2, cy - 330, 1.25));
 
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,0.7)'; ctx.shadowBlur = 30;
