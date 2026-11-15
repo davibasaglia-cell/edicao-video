@@ -124,9 +124,9 @@ async function main() {
     if (['card_hook', 'checkbox_card', 'gauge', 'logo', 'hierarchy', 'closer'].includes(s.type)) ev.push({ type: 'whoosh', t: s.outStart - 0.12, gain: 0.9 });
     if (s.type === 'card_hook') ev.push({ type: 'boom', t: (s.emphasisAtOut != null ? s.emphasisAtOut : s.outStart + 0.12), gain: 0.8 });
     if (s.type === 'impact_text') s.lines.forEach((l, i) => ev.push(l.boom ? { type: 'boom', t: l.atOut } : { type: 'whoosh', t: l.atOut - 0.1, gain: 0.6 }));
-    if (s.type === 'checkbox_card') s.items.forEach(i => ev.push(i.highlight ? { type: 'chime', t: i.atOut } : { type: 'tick', t: i.atOut }));
+    if (s.type === 'checkbox_card') s.items.forEach(i => ev.push(i.highlight ? { type: 'chime', t: i.atOut, gain: 2.5 } : { type: 'tick', t: i.atOut, gain: 3 }));
     if (s.type === 'gauge') s.stages.slice(1).forEach(st => ev.push({ type: 'whoosh', t: st.atOut - 0.05, gain: 0.7 }));
-    if (s.type === 'hierarchy') { ev.push({ type: 'boom', t: s.bigAtOut, gain: 0.8 }); if (s.small2AtOut) ev.push({ type: 'tick', t: s.small2AtOut }); }
+    if (s.type === 'hierarchy') { ev.push({ type: 'boom', t: s.bigAtOut, gain: 0.8 }); if (s.small2AtOut) ev.push({ type: 'tick', t: s.small2AtOut, gain: 3 }); }
     if (s.type === 'closer') ev.push({ type: 'boom', t: s.line2AtOut }, { type: 'chime', t: s.line2AtOut + 0.05, gain: 0.8 });
   });
   const sfxFile = path.join(outDir, 'sfx.wav');
@@ -165,11 +165,15 @@ async function main() {
   const ctx = canvas.getContext('2d');
   const empty = Buffer.alloc(W * H * 4);
   const output = R(cfg.output);
+  const sfxCfg = { volume: 0.22, duck: true, ...(cfg.sfx || {}) };
   const fc = [
     `[1:v]format=bgra[ov]`,
     `[0:v][ov]overlay=0:0:alpha=premultiplied:format=auto:eof_action=pass,format=yuv420p[v]`,
-    `[0:a]highpass=f=70,afftdn=nf=-28,loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000[voz]`,
-    `[voz][2:a]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]`,
+    `[0:a]highpass=f=70,afftdn=nf=-28,loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,asplit=2[voz][vozkey]`,
+    // SFX sempre ABAIXO da voz: volume reduzido + ducking (comprime os efeitos quando há fala)
+    `[2:a]volume=${sfxCfg.volume}[sfxv]`,
+    sfxCfg.duck ? `[sfxv][vozkey]sidechaincompress=threshold=0.02:ratio=10:attack=5:release=300:makeup=1[sfx]` : `[sfxv]anull[sfx];[vozkey]anullsink`,
+    `[voz][sfx]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]`,
   ].join(';');
   let ff;
   const done = run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-stats',

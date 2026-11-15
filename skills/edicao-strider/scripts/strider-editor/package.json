@@ -1,0 +1,16 @@
+{
+  "name": "strider-editor",
+  "version": "1.0.0",
+  "description": "Edi\u00e7\u00e3o estilo Strider em JavaScript (node-canvas + FFmpeg)",
+  "main": "index.js",
+  "scripts": {
+    "render": "node index.js",
+    "overlays": "node index.js --skip-base"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^3.2.3"
+  }
+}

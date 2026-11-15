@@ -10,6 +10,7 @@
   "silence": { "noise_db": -32, "min_dur": 0.3, "pad": 0.1 },
   "zoom": [1.0, 1.12],
   "tail_hold": 0.8,
+  "sfx": { "volume": 0.22, "duck": true },
   "captions": { "y": 0.8, "max_chars": 18, "max_words": 4 },
   "segments": [
     { "type": "logo", "start": 25.95, "end": 28.0, "title": "TREINAMENTO COMERCIAL", "subtitle": "RECIPROCIDADE", "y": 0.07 },
