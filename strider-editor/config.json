@@ -1,45 +1,46 @@
 {
-  "input": "input/IMG_3008.MOV",
-  "transcript": "input/transcript.json",
-  "output": "output/video_strider.mp4",
+  "input": "input/video2.MOV",
+  "transcript": "input/transcript2_fixed.json",
+  "output": "output/video2_strider.mp4",
   "fps": 30,
   "width": 1080,
   "height": 1920,
-  "range": [25.95, 94.3],
-  "remove": [[75.40, 78.25]],
+  "range": [0, 65.1],
+  "remove": [],
   "silence": { "noise_db": -32, "min_dur": 0.3, "pad": 0.1 },
   "zoom": [1.0, 1.12],
   "tail_hold": 0.8,
   "sfx": { "volume": 0.22, "duck": true },
   "captions": { "y": 0.8, "max_chars": 18, "max_words": 4 },
   "segments": [
-    { "type": "logo", "start": 25.95, "end": 28.0, "title": "TREINAMENTO COMERCIAL", "subtitle": "RECIPROCIDADE", "y": 0.07 },
+    { "type": "logo", "start": 0, "end": 1.9, "title": "TREINAMENTO COMERCIAL", "subtitle": "VENDAS NA CLÍNICA", "y": 0.07 },
 
-    { "type": "card_hook", "start": 28.0, "end": 30.3, "lines": ["O QUE O", "BOLO", "FAZ?"], "emphasis": [1], "emphasis_at": 28.24, "bw": true, "hide_captions": true },
+    { "type": "card_hook", "start": 1.94, "end": 4.36, "lines": ["OFEREÇA", "PACOTES", "NA CLÍNICA"], "emphasis": [1], "emphasis_at": 3.2, "bw": true, "hide_captions": true },
 
-    { "type": "gauge", "start": 35.75, "end": 38.45, "label": "PESO DA DECISÃO",
-      "stages": [ { "at": 35.75, "needle": 0.25, "sub": "DECISÃO" }, { "at": 35.95, "needle": 0.95, "sub": "PESADA" } ] },
+    { "type": "hierarchy", "start": 5.0, "end": 8.4, "small": "DENTRO DA CLÍNICA", "big": "EMOÇÃO", "big_at": 7.28, "small2": "A MAIS", "small2_at": 7.98, "bw": true, "hide_captions": true },
 
-    { "type": "impact_text", "start": 38.45, "end": 39.8, "bw": true, "color": "#FFD700", "hide_captions": true,
-      "lines": [ { "text": "A DECISÃO", "at": 38.5 }, { "text": "MAIS", "at": 39.08 }, { "text": "DOCE", "at": 39.3, "boom": true } ] },
-
-    { "type": "gauge", "start": 39.8, "end": 42.3, "label": "PESO DA DECISÃO",
-      "stages": [ { "at": 39.8, "needle": 0.95, "sub": "PESADA" }, { "at": 39.98, "needle": 0.15, "sub": "MAIS LEVE" } ] },
-
-    { "type": "checkbox_card", "start": 46.6, "end": 65.35, "title": "QUANDO USAR O BOLO",
+    { "type": "checkbox_card", "start": 8.76, "end": 17.85, "title": "O QUE ELE VIVE NA CLÍNICA", "y": 0.4, "hide_captions": true,
       "items": [
-        { "text": "AVALIAÇÃO DE PROCEDIMENTO CARO", "at": 48.4 },
-        { "text": "INTERESSE EM OUTRO PROCEDIMENTO", "at": 55.62 },
-        { "text": "NA HORA DE PASSAR O PREÇO", "at": 63.66, "highlight": true }
+        { "text": "CONHECE VOCÊS", "at": 8.88 },
+        { "text": "CONHECE O ESPAÇO", "at": 10.58 },
+        { "text": "TOMA UM CAFEZINHO", "at": 12.72 },
+        { "text": "VÊ O AMBIENTE", "at": 13.92 },
+        { "text": "MATERIAIS ESTERILIZADOS", "at": 16.72, "highlight": true }
       ] },
 
-    { "type": "impact_text", "start": 67.4, "end": 70.1, "bw": true, "color": "#FFD700", "hide_captions": true,
-      "lines": [ { "text": "ISSO", "at": 67.46 }, { "text": "É", "at": 67.66 }, { "text": "OURO", "at": 68.26, "boom": true, "max": 360 } ] },
+    { "type": "impact_text", "start": 18.9, "end": 21.95, "bw": true, "color": "#FFD700", "hide_captions": true,
+      "lines": [ { "text": "GERA", "at": 19.1 }, { "text": "AUTORIDADE", "at": 19.66, "boom": true }, { "text": "E EMOÇÃO", "at": 20.98 } ] },
 
-    { "type": "card_hook", "start": 78.9, "end": 82.2, "lines": ["DEIXE SEMPRE UM", "DOCE", "ARMAZENADO"], "emphasis": [1], "bw": true, "hide_captions": true },
+    { "type": "gauge", "start": 28.5, "end": 30.6, "label": "AGENDA",
+      "stages": [ { "at": 28.5, "needle": 0.2, "sub": "AGENDA" }, { "at": 28.66, "needle": 0.55, "sub": "VALE A PENA" }, { "at": 29.54, "needle": 0.98, "sub": "FULL" } ] },
 
-    { "type": "hierarchy", "start": 83.36, "end": 84.75, "small": "TEM QUE SER", "big": "FÁCIL", "big_at": 83.84, "small2": "DE COMER", "small2_at": 84.22, "y": 0.5, "bw": true, "hide_captions": true },
+    { "type": "card_hook", "start": 37.1, "end": 39.0, "lines": ["CÉREBRO", "LÍMBICO", "O CÉREBRO DA EMOÇÃO"], "emphasis": [1], "emphasis_at": 37.88, "bw": true, "hide_captions": true },
 
-    { "type": "closer", "start": 92.0, "end": 999, "line1": "ESSA DICA É", "line2": "TOP", "line2_at": 93.56, "overlay_color": "rgba(200,140,20,0.35)", "hide_captions": true }
+    { "type": "impact_text", "start": 42.9, "end": 46.0, "bw": true, "color": "#FFD700", "hide_captions": true,
+      "lines": [ { "text": "NÃO SABE", "at": 43.12 }, { "text": "REAL", "at": 43.64 }, { "text": "OU FALSO", "at": 45.04, "boom": true } ] },
+
+    { "type": "hierarchy", "start": 54.9, "end": 57.35, "small": "UMA MENTIRA CONTADA", "big": "MIL VEZES", "big_at": 55.88, "small2": "VIRA VERDADE", "small2_at": 56.56, "bw": true, "hide_captions": true },
+
+    { "type": "closer", "start": 63.44, "end": 999, "line1": "MAIS ELE ACREDITA COMO", "line2": "VERDADE", "line2_at": 64.46, "hide_captions": true }
   ]
 }
