@@ -1,5 +1,5 @@
 {
- "decupagem_aprovada": false,
+ "decupagem_aprovada": true,
  "input": "input/video.mp4",
  "transcript": "input/transcript.json",
  "output": "output/seguros_sicredi.mp4",
