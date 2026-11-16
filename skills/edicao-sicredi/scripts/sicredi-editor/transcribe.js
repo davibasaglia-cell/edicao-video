@@ -4,6 +4,11 @@
 // Rede: o modelo vem do Hugging Face (huggingface.co). Sem acesso, baixe o modelo antes e passe --local <pasta>.
 const { spawnSync } = require('child_process');
 const fs = require('fs');
+// O fetch nativo do Node ignora HTTPS_PROXY; em ambientes com proxy, reexecuta com NODE_USE_ENV_PROXY=1 (Node ≥ 22.21).
+if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_USE_ENV_PROXY) {
+  const r = spawnSync(process.execPath, process.argv.slice(1), { stdio: 'inherit', env: { ...process.env, NODE_USE_ENV_PROXY: '1' } });
+  process.exit(r.status == null ? 1 : r.status);
+}
 const args = process.argv.slice(2);
 const li = args.indexOf('--local'); const localDir = li >= 0 ? args.splice(li, 2)[1] : null;
 const [inp, out, model = 'Xenova/whisper-small'] = args;
