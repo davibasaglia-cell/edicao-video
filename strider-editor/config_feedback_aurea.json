@@ -1,0 +1,96 @@
+{
+  "input": "input/feedback.MOV",
+  "transcript": "input/transcript_fixed.json",
+  "output": "output/feedback_aurea_strider.mp4",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "range": [1.6, 246.9],
+  "remove": [],
+  "silence": { "noise_db": -30, "min_dur": 0.3, "pad": 0.12 },
+  "zoom": [1.0, 1.12],
+  "tail_hold": 1.0,
+  "sfx": { "volume": 0.22, "duck": true },
+  "captions": { "y": 0.8, "max_chars": 18, "max_words": 4 },
+  "segments": [
+    { "type": "name_callout", "start": 1.6, "end": 11.2,
+      "header": "FEEDBACK · TREINAMENTO COMERCIAL", "header_at": 1.7,
+      "people": [
+        { "name": "CAROL", "role": "CEO DA CLÍNICA ÁUREA", "at": 2.3, "anchor": [0.27, 0.56], "box": [0.05, 0.635], "align": "left",
+          "track": [ { "at": 2.3, "x": 0.27, "y": 0.56 }, { "at": 5.0, "x": 0.27, "y": 0.56 }, { "at": 8.0, "x": 0.34, "y": 0.48 }, { "at": 10.5, "x": 0.38, "y": 0.5 } ] },
+        { "name": "LAURA", "role": "CEO DA CLÍNICA ÁUREA", "at": 3.6, "anchor": [0.60, 0.29], "box": [0.95, 0.09], "align": "right",
+          "track": [ { "at": 3.6, "x": 0.60, "y": 0.29 }, { "at": 5.0, "x": 0.63, "y": 0.29 }, { "at": 8.0, "x": 0.70, "y": 0.25 }, { "at": 10.5, "x": 0.79, "y": 0.235 } ] }
+      ] },
+
+    { "type": "question_bar", "start": 14.6, "end": 19.0, "num": 1,
+      "question": "COMO FOI A EXPERIÊNCIA COM O TREINAMENTO?" },
+
+    { "type": "tape_measure", "start": 19.1, "end": 27.6, "hide_captions": true,
+      "marks": [ { "text": "ELABORADO", "at": 21.76 }, { "text": "PENSADO", "at": 23.7 } ],
+      "big": "PERSONALIZADO", "big_at": 24.94, "small": "PARA A CLÍNICA", "small_at": 26.24 },
+
+    { "type": "focus_pull", "start": 34.1, "end": 35.76, "bw": true, "hide_captions": true,
+      "word": "RESULTADOS", "focus_at": 35.1, "big": "NÍTIDOS" },
+
+    { "type": "route_pin", "start": 35.76, "end": 42.9, "hide_captions": true,
+      "pin_label": "DIRECIONAMENTO", "pin_at": 36.42,
+      "team_label": "SUPORTE DE TODA A EQUIPE", "team_at": 39.5 },
+
+    { "type": "switch_toggle", "start": 47.6, "end": 50.4, "hide_captions": true,
+      "label": "APOIO", "on_at": 48.16, "line": "FICA MUITO MAIS", "big": "FÁCIL", "big_at": 49.08 },
+
+    { "type": "stories_bar", "start": 59.9, "end": 66.5, "hide_captions": true, "handle": "@clinicaaurea.ocaucu",
+      "small": "FORMULAÇÃO DE", "big": "STORIES", "big_at": 62.02, "chip": "OFERTAR MAIS", "chip_at": 64.32 },
+
+    { "type": "question_bar", "start": 66.7, "end": 73.0, "num": 2,
+      "question": "JÁ TINHA EXPERIÊNCIA PRÁTICA EM VENDAS?" },
+
+    { "type": "magnet_pull", "start": 78.9, "end": 85.8, "hide_captions": true,
+      "top": "POSTAGEM", "big": "ATRAIR PESSOAS", "pull_at": 80.28, "chip": "A NOVA GERAÇÃO", "chip_at": 82.72 },
+
+    { "type": "question_bar", "start": 100.7, "end": 109.6, "num": 3,
+      "question": "MAIS CLAREZA SOBRE A META DE FATURAMENTO?" },
+
+    { "type": "meta_split", "start": 110.9, "end": 121.0, "hide_captions": true,
+      "label": "META", "doubt": "É MUITO?", "doubt_at": 114.36,
+      "split_at": 118.4, "split_label": "QUANTIDADE DE SERVIÇOS" },
+
+    { "type": "bullseye_arrow", "start": 128.7, "end": 132.95, "bw": true, "hide_captions": true,
+      "label": "A META FICA FÁCIL DE SER", "label_at": 128.74, "hit_at": 131.68, "big": "ALCANÇADA" },
+
+    { "type": "magnifier", "start": 132.95, "end": 137.6, "hide_captions": true,
+      "text": "AMPLIAR A VISÃO", "start_word_at": 134.26, "settle_at": 136.4 },
+
+    { "type": "before_after", "start": 145.7, "end": 150.7, "hide_captions": true,
+      "before": "ANTES", "before_at": 145.82, "after": "DEPOIS", "after_at": 149.74, "sub": "DO TRABALHO COM A ALMA" },
+
+    { "type": "question_bar", "start": 150.7, "end": 161.0, "num": 4,
+      "question": "QUAL FOI O MAIOR SALTO?" },
+
+    { "type": "float_up", "start": 171.7, "end": 177.6, "hide_captions": true,
+      "words": [ { "text": "MAIS", "at": 172.66 }, { "text": "LEVE", "at": 173.12 } ],
+      "line": "NO NOSSO DIA A DIA", "line_at": 175.48 },
+
+    { "type": "padlock_price", "start": 197.9, "end": 205.0, "hide_captions": true,
+      "top": "VALORES DOS PROCEDIMENTOS", "lock_at": 202.12, "big": "BLOQUEIO", "small": "DE AUMENTAR PREÇO", "small_at": 203.1 },
+
+    { "type": "signpost", "start": 205.36, "end": 210.6, "hide_captions": true,
+      "title": "CAPTAÇÃO?", "title_at": 206.16,
+      "arrows": [ { "text": "TRÁFEGO", "at": 207.6 }, { "text": "TREINAMENTO\nDE VENDAS", "at": 209.14, "highlight": true } ] },
+
+    { "type": "compass", "start": 221.6, "end": 226.1, "hide_captions": true,
+      "top": "QUAL O CAMINHO?", "lock_at": 224.78, "big": "DIRECIONAMENTO" },
+
+    { "type": "chat_notify", "start": 228.9, "end": 234.6, "hide_captions": true,
+      "messages": [ { "text": "CONTEM CONOSCO", "at": 229.48 }, { "text": "MANDEM MENSAGEM", "at": 231.22 },
+                    { "text": "À DISPOSIÇÃO", "at": 233.22, "highlight": true, "check": true } ] },
+
+    { "type": "bar_growth", "start": 234.6, "end": 242.12, "hide_captions": true,
+      "bars": [ { "label": "VOCÊS", "value": 0.55, "at": 237.22 }, { "label": "A CLÍNICA", "value": 1.0, "at": 239.78 } ],
+      "stamp": "DIA A DIA", "stamp_at": 241.48 },
+
+    { "type": "broadcast_close", "start": 242.12, "end": 999, "hide_captions": true,
+      "line1": "TRABALHO MUITO BOM", "line1_at": 242.78, "line2": "AS PESSOAS PRECISAM SABER", "line2_at": 244.42,
+      "handle": "@clinicaaurea.ocaucu", "handle_at": 245.5 }
+  ]
+}
