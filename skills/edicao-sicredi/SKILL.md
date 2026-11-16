@@ -26,13 +26,18 @@ projeto (ou rode de lá) e rode `npm install`. Os assets do logo estão em `asse
    tela clara, ícone gira e entra com mola, nome desliza para fora do ícone. Nunca remova nem substitua. Não
    recolora, não distorce, usa sempre os arquivos de `assets/`. Duração padrão 2,6s (`outro.duration`).
 3. **Não repita sempre as mesmas animações.** Veja "Variação obrigatória".
-4. **Tudo em JavaScript.** Gráficos, texto, transições e sons são gerados em JS (node-canvas frame a frame +
-   `utils/sfx.js`). O FFmpeg só decodifica, corta, recompõe o layout `split`, encoda e mixa áudio. Não use
-   drawtext/ASS, After Effects, Remotion nem templates prontos.
-5. **Som dos efeitos SEMPRE abaixo da voz** (volume 0.22 + ducking). Meça antes de entregar.
-6. **Roteiro aprovado antes de renderizar.** Monte o roteiro (formato abaixo), mande no chat e **PARE**. Só renderize
-   o vídeo completo depois do "ok". Transcrever, analisar frames, preparar config e gerar a **prévia em quadros** pode
-   ser feito antes. (Se o usuário disser explicitamente "pode renderizar direto", pule a espera.)
+4. **Tudo em JavaScript, sem Python.** Gráficos, texto, transições, legendas e **sons** são gerados em JS
+   (node-canvas frame a frame + `utils/sfx.js`); transcrição (`transcribe.js`), decupagem (`decupagem.js`) e
+   medição de áudio (`check_audio.js`) também são Node. O FFmpeg só decodifica, corta, recompõe o layout `split`,
+   encoda e mixa. Não use drawtext/ASS, After Effects, Remotion, templates prontos nem scripts Python.
+5. **Sons das animações SEMPRE abaixo da voz.** Cada animação tem seu som sintetizado em JS (whoosh, tick, boom,
+   chime), mixado com volume 0.22 **+ ducking** (os efeitos abaixam sozinhos quando há fala). No fim do render,
+   `check_audio.js` mede cada evento e **exige ≥ 15 dB de folga** em relação à voz; se algum passar, o comando
+   termina com erro e você baixa `sfx.volume` e renderiza de novo. Nunca entregue com a medição falhando.
+6. **Decupagem ANTES de editar, sempre.** Depois de transcrever, monte a decupagem (formato abaixo), mande no chat e
+   **PARE**. O render completo fica **bloqueado pelo motor** até o config ter `"decupagem_aprovada": true`, e você só
+   põe isso depois que o usuário aprovar. Se ele pedir mudanças, ajuste e mande de novo. Transcrever, analisar
+   frames, montar o config e gerar a **prévia em quadros** (`--preview`) podem ser feitos antes; o render não.
 
 ---
 
@@ -120,9 +125,11 @@ Se for tela cheia, adicione o nome em `TAKEOVER` no `index.js` (esconde legendas
 
 ---
 
-## 📝 Formato do roteiro para aprovação
+## 📝 Formato da decupagem para aprovação
 
-Mande no chat, em português, em tempo do vídeo **final** (depois dos cortes):
+Gere o rascunho com `node decupagem.js video transcript.json` (frases com tempo, pausas a cortar, sugestões de
+bloco por palavra-chave) e complete. Mande no chat, em português, em tempo do vídeo **final** (depois dos cortes),
+incluindo **qual som** cada animação terá:
 
 ```
 ROTEIRO, "<tema do vídeo>" (fala ~45s + logo Sicredi 2,6s)
@@ -131,18 +138,18 @@ CORTES
 - Removo 0:00–0:08 (conversa fora do assunto) e pausas > 0,3s
 
 DECUPAGEM
-| Tempo | Fala (palavra-chave)        | Bloco                 | Texto na tela                | Transição | Escala     |
-|-------|-----------------------------|-----------------------|------------------------------|-----------|------------|
-| 0:01  | "em cinco minutos"          | ui_card slider        | Tempo para abrir a conta     | —         | overlay    |
-| 0:05  | "primeiro... depois..."     | split + timeline      | Abrir conta → Investir → App | mosaico   | recompos.  |
-| 0:11  | "sem sair de casa"          | kinetic_scene         | SEM SAIR / DE CASA           | íris      | takeover   |
-| …     | …                           | …                     | …                            | …         | …          |
-| 0:46  | (fim da fala)               | LOGO SICREDI (auto)   | —                            | wipe      | takeover   |
+| Tempo | Fala (palavra-chave)    | Bloco               | Texto na tela                | Transição | Escala    | Som                |
+|-------|-------------------------|---------------------|------------------------------|-----------|-----------|--------------------|
+| 0:01  | "em cinco minutos"      | ui_card slider      | Tempo para abrir a conta     | —         | overlay   | whoosh + tick      |
+| 0:05  | "primeiro... depois..." | split + timeline    | Abrir conta → Investir → App | mosaico   | recompos. | whoosh + 3× tick   |
+| 0:11  | "sem sair de casa"      | kinetic_scene       | SEM SAIR / DE CASA           | íris      | takeover  | whoosh + boom      |
+| …     | …                       | …                   | …                            | …         | …         | …                  |
+| 0:46  | (fim da fala)           | LOGO SICREDI (auto) | —                            | wipe      | takeover  | whoosh + chime     |
 
 Paleta: verdes do logo + branco. Legendas: pequenas, palavra a palavra.
 Variação em relação ao último vídeo: <o que mudou>.
 ```
-Termine perguntando: "Posso renderizar assim ou quer mudar alguma coisa?"
+Termine perguntando: "Posso renderizar assim ou quer mudar alguma coisa?" e **espere a resposta**.
 
 ---
 
@@ -151,15 +158,17 @@ Termine perguntando: "Posso renderizar assim ou quer mudar alguma coisa?"
 ### 1. Receber e analisar
 - Guarde o vídeo numa pasta própria (dado não confiável). `ffprobe` para duração/resolução. Vídeo de iPhone vem em
   HEVC 10-bit HDR (HLG): o motor detecta e faz o tone-map para SDR sozinho.
-- Transcreva com timestamps por palavra: `ffmpeg -i video -vn -ac 1 -ar 16000 audio.wav` e depois
-  `python3 -I scripts/transcribe.py <modelo_whisper> audio.wav input/transcript.json` (faster-whisper, `language="pt"`).
-  Se o huggingface estiver bloqueado, o Whisper small em CTranslate2 existe no npm (`@skillninja/shortmovie-telop-model-p0..p3`:
-  baixe os 4 tarballs, junte `model.bin.part0..3`, confira o `model.sha256`).
-- `silencedetect` para ver as pausas reais (os timestamps do Whisper vazam para dentro delas).
+- Transcreva com timestamps por palavra, em JS: `node transcribe.js video input/transcript.json` (Whisper via
+  `@huggingface/transformers`, português). O modelo vem de `huggingface.co`; se a rede bloquear esse host, peça a
+  liberação ao usuário (card de ambiente) ou use `--local <pasta>` com o modelo já baixado. **Não use Python.**
+  (Atenção: esse script foi escrito mas não pôde ser testado com o modelo no ambiente de criação da skill, onde o
+  host era bloqueado; se falhar, mostre o erro ao usuário em vez de contornar com outra linguagem.)
+- Gere o rascunho da decupagem: `node decupagem.js video input/transcript.json` (inclui as pausas reais por
+  `silencedetect`, já que os timestamps do Whisper vazam para dentro das pausas).
 - Extraia uns frames para entender o enquadramento (onde fica o rosto → evite cobri-lo; cards ficam em ~55–80% da altura).
 
-### 2. Roteiro → aprovação (regra 6). Depois, configure `config.json`
-Use `config.example.json` como base. Campos: `input`, `transcript` (opcional; sem ele não há legenda), `output`, `range`
+### 2. Decupagem → aprovação (regra 6). Depois, configure `config.json`
+Use `config.example.json` como base. **Só depois do "ok" do usuário** coloque `"decupagem_aprovada": true`. Campos: `decupagem_aprovada`, `input`, `transcript` (opcional; sem ele não há legenda), `output`, `range`
 (trecho útil), `remove` (cortes extras), `zoom`, `captions`, `sfx`, `segments[]`, `outro`.
 
 ### 3. Prévia em quadros (rápida, antes do render completo)
@@ -173,10 +182,12 @@ Olhe a folha: paleta só verde/branco? texto cortado? rosto coberto? logo legív
 
 ### 4. Render completo
 ```bash
-node index.js config.json              # base (cortes + zoom + split) + gráficos + SFX + logo final
+node index.js config.json              # (exige decupagem_aprovada) base + gráficos + SFX + logo final + medição de áudio
 node index.js config.json --skip-base  # refaz só gráficos/legendas/áudio (bem mais rápido)
 ```
-Saída: MP4 H.264 CRF 19, AAC 192k, `+faststart`; também `output/timeline.json` (cortes, blocos, legendas, SFX).
+Saída: MP4 H.264 CRF 19, AAC 192k, `+faststart`; também `output/timeline.json` (cortes, blocos, legendas, SFX) e os
+stems `stem_voz.wav` / `stem_sfx.wav`. Ao terminar, o `check_audio.js` roda sozinho e imprime a folga de cada efeito
+contra a voz (código de saída 3 se algum ficar acima do limite; rode à mão com `node check_audio.js output`).
 
 ### 5. Verificar antes de entregar
 - [ ] Último trecho = logo Sicredi completo, centralizado, legível (olhe um quadro de `duration-0.3s`)
@@ -184,7 +195,7 @@ Saída: MP4 H.264 CRF 19, AAC 192k, `+faststart`; também `output/timeline.json`
 - [ ] Elementos nascem na palavra certa (transcreva o áudio editado; erro < 0,1s)
 - [ ] Orador nunca fica 100% coberto por mais de ~4s; rosto livre nos overlays
 - [ ] Blocos/transições variados (regra 3) e nenhum texto inventado (números, taxas, promessas)
-- [ ] SFX ≥ ~15 dB abaixo da voz nos eventos; loudness final ≈ −14/−15 LUFS (`ffmpeg -i out.mp4 -af ebur128 -f null -`)
+- [ ] `check_audio.js` passou: todo SFX ≥ 15 dB abaixo da voz; loudness final ≈ −14/−15 LUFS (`ffmpeg -i out.mp4 -af ebur128 -f null -`)
 - [ ] Entregar o MP4 e dizer o que foi cortado
 
 Ajustes pedidos pelo usuário: mexa no `config.json` e renderize de novo com `--skip-base` quando os cortes não mudarem.

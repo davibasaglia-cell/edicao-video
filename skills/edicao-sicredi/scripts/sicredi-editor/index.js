@@ -81,6 +81,12 @@ async function main() {
   const input = R(cfg.input), output = R(cfg.output), outDir = path.dirname(output);
   fs.mkdirSync(outDir, { recursive: true });
   const assets = await U.loadAssets();
+  if (!PREVIEW && cfg.decupagem_aprovada !== true) {
+    console.error('⛔ Render completo bloqueado: a decupagem ainda não foi aprovada pelo usuário.\n' +
+      '   Mande a decupagem no chat, espere o "ok" e só então coloque "decupagem_aprovada": true no config.json.\n' +
+      '   (Prévia em quadros continua liberada: --preview auto)');
+    process.exit(2);
+  }
 
   // 1. Cortes rítmicos
   console.log('→ Detectando pausas...');
@@ -210,14 +216,17 @@ async function main() {
     `[0:a]highpass=f=70,afftdn=nf=-28,loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000,asplit=2[voz][vozkey]`,
     `[2:a]volume=${sfxCfg.volume}[sfxv]`,
     sfxCfg.duck ? `[sfxv][vozkey]sidechaincompress=threshold=0.02:ratio=10:attack=5:release=300:makeup=1[sfx]` : `[sfxv]anull[sfx];[vozkey]anullsink`,
-    `[voz][sfx]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]`,
+    `[voz]asplit=2[vozm][vozs]`, `[sfx]asplit=2[sfxm][sfxs]`,
+    `[vozm][sfxm]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[a]`,
   ].join(';');
   let ff;
   const done = run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-stats', '-i', base,
     '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s', `${W}x${H}`, '-r', String(fps), '-i', 'pipe:0', '-i', sfxFile,
     '-filter_complex', fc, '-map', '[v]', '-map', '[a]', '-t', duration.toFixed(3),
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '19', '-profile:v', 'high', '-pix_fmt', 'yuv420p',
-    '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', output],
+    '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', output,
+    '-map', '[vozs]', '-t', duration.toFixed(3), '-ac', '1', '-c:a', 'pcm_s16le', path.join(outDir, 'stem_voz.wav'),
+    '-map', '[sfxs]', '-t', duration.toFixed(3), '-ac', '1', '-c:a', 'pcm_s16le', path.join(outDir, 'stem_sfx.wav')],
     { stdin: true, onSpawn: p => { ff = p; } });
   for (let f = 0; f < totalFrames; f++) {
     const buf = drawFrame(f / fps) ? canvas.toBuffer('raw') : empty;
@@ -225,5 +234,8 @@ async function main() {
   }
   ff.stdin.end(); await done;
   console.log(`✅ Vídeo salvo em ${output}`);
+  // medição automática: efeitos precisam ficar abaixo da voz
+  const chk = spawnSync('node', [path.join(ROOT, 'check_audio.js'), outDir], { stdio: 'inherit' });
+  if (chk.status !== 0) { console.error('⚠️  Efeitos acima do limite: baixe sfx.volume no config e rode com --skip-base.'); process.exit(3); }
 }
 main().catch(e => { console.error(e); process.exit(1); });

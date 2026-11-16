@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "Edição estilo motion-UI com a identidade Sicredi (node-canvas + FFmpeg)",
   "main": "index.js",
-  "scripts": { "render": "node index.js", "overlays": "node index.js --skip-base" },
+  "scripts": {
+    "render": "node index.js",
+    "overlays": "node index.js --skip-base"
+  },
   "license": "ISC",
-  "dependencies": { "canvas": "^3.2.3" }
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.2",
+    "canvas": "^3.2.3"
+  }
 }
