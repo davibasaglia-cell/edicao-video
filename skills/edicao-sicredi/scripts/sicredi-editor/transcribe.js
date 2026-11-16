@@ -1,5 +1,5 @@
 // Transcrição com timestamps por palavra, em JavaScript (Whisper via @huggingface/transformers, onnx).
-// Uso: node transcribe.js <video_ou_audio> <saida.json> [modelo=Xenova/whisper-small] [--local <pasta_de_modelos>]
+// Uso: node transcribe.js <video_ou_audio> <saida.json> [modelo=onnx-community/whisper-small_timestamped] [--local <pasta_de_modelos>]
 // Saída no formato que o index.js lê: [{start,end,text,words:[{w,s,e}]}]
 // Rede: o modelo vem do Hugging Face (huggingface.co). Sem acesso, baixe o modelo antes e passe --local <pasta>.
 const { spawnSync } = require('child_process');
@@ -11,11 +11,12 @@ if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_US
 }
 const args = process.argv.slice(2);
 const li = args.indexOf('--local'); const localDir = li >= 0 ? args.splice(li, 2)[1] : null;
-const [inp, out, model = 'Xenova/whisper-small'] = args;
+const [inp, out, model = 'onnx-community/whisper-small_timestamped'] = args;
 if (!inp || !out) { console.error('uso: node transcribe.js <video> <saida.json> [modelo] [--local pasta]'); process.exit(1); }
 
 (async () => {
   const { pipeline, env } = await import('@huggingface/transformers');
+  // modelo PRECISA ser exportado com cross-attentions (variantes *_timestamped) para dar tempo por palavra
   if (localDir) { env.localModelPath = localDir; env.allowRemoteModels = false; }
   // decodifica o áudio para PCM float32 16 kHz mono via FFmpeg (stdout → Buffer)
   const r = spawnSync('ffmpeg', ['-v', 'error', '-i', inp, '-vn', '-ac', '1', '-ar', '16000', '-f', 'f32le', '-'], { maxBuffer: 1 << 30 });
