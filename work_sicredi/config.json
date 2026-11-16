@@ -1,49 +1,319 @@
 {
-  "decupagem_aprovada": false,
-  "input": "input/video.mp4",
-  "transcript": "input/transcript.json",
-  "output": "output/seguros_sicredi.mp4",
-  "fps": 30, "width": 1080, "height": 1920,
-  "range": [2.85, 165.45],
-  "remove": [[18.70, 24.05], [35.70, 37.45], [73.68, 97.62], [104.55, 118.52], [132.15, 138.40], [152.40, 158.90]],
-  "silence": { "noise_db": -32, "min_dur": 0.3, "pad": 0.1 },
-  "zoom": [1.0, 1.1],
-  "sfx": { "volume": 0.22, "duck": true },
-  "captions": { "y": 0.88, "max_chars": 22, "max_words": 4 },
-  "segments": [
-    { "type": "kinetic_scene", "start": 5.30, "end": 8.45, "bg": "dark",
-      "transition_in": { "kind": "squares", "dur": 0.55 }, "transition_out": { "kind": "wipe", "dur": 0.55 },
-      "lines": [ { "text": "Sua casa,", "at": 5.34 }, { "text": "sua empresa,", "at": 6.44 }, { "text": "seu barracão.", "at": 7.60, "emphasis": true } ] },
-
-    { "type": "alert_card", "start": 9.10, "end": 15.10, "y": 0.56, "tag": "Alerta", "title": "El Niño", "body": "Em questão de minutos", "shake_at": 10.56 },
-
-    { "type": "kinetic_scene", "start": 16.90, "end": 18.62, "bg": "green", "y": 0.36,
-      "transition_in": { "kind": "iris", "dur": 0.5 }, "transition_out": { "kind": "slide", "dur": 0.5 },
-      "lines": [ { "text": "Solução", "at": 17.12, "emphasis": true, "size": 150 }, { "text": "perfeita pra você", "at": 17.64 } ] },
-
-    { "type": "tiles_scene", "start": 24.08, "end": 30.0, "title": "Seguros Sicredi", "title_at": 24.30,
-      "transition_in": { "kind": "wipe", "dur": 0.55 }, "transition_out": { "kind": "squares", "dur": 0.55 },
-      "tiles": [ { "label": "Residencial", "at": 24.80, "tone": "green" }, { "label": "Patrimonial", "at": 25.70, "tone": "mid" }, { "label": "Rural", "at": 26.46, "tone": "dark" } ] },
-
-    { "type": "checklist_card", "start": 50.30, "end": 55.40, "y": 0.47, "title": "Proteção contra",
-      "items": [ { "text": "Raio", "at": 51.26 }, { "text": "Explosão", "at": 51.92 }, { "text": "Incêndio", "at": 52.88 }, { "text": "Danos elétricos", "at": 53.98 } ] },
-
-    { "type": "kinetic_scene", "start": 65.95, "end": 69.90, "bg": "dark",
-      "transition_in": { "kind": "squares", "dur": 0.55 }, "transition_out": { "kind": "iris", "dur": 0.55 },
-      "lines": [ { "text": "O tão temido", "at": 66.02 }, { "text": "vendaval", "at": 67.10, "emphasis": true, "size": 150 } ] },
-
-    { "type": "phone_float", "start": 118.55, "end": 123.70, "title": "Assistência 24h", "subtitle": "Disponível", "value": "24 horas",
-      "rows": ["Chaveiro", "Eletricista", "Encanador", "Outras assistências"] },
-
-    { "type": "ui_card", "variant": "stat", "start": 138.42, "end": 142.10, "title": "Proteção a partir de", "value": 37, "prefix": "R$ ", "caption": "por mês", "count_dur": 0.8 },
-
-    { "type": "split", "start": 143.42, "end": 152.38 },
-    { "type": "ui_card", "variant": "timeline", "start": 143.50, "end": 152.38, "y": 0.5, "h": 620,
-      "items": [ { "at": 143.80, "text": "Vá até a agência Sicredi" }, { "at": 146.58, "text": "Leve o seu patrimônio" }, { "at": 150.42, "text": "Cotação ajustada a você" } ] },
-
-    { "type": "kinetic_scene", "start": 158.92, "end": 163.35, "bg": "green", "y": 0.28,
-      "transition_in": { "kind": "wipe", "dur": 0.55 }, "transition_out": { "kind": "squares", "dur": 0.55 },
-      "lines": [ { "text": "Proteger seu patrimônio", "at": 159.20 }, { "text": "é cuidar do que você", "at": 160.50 }, { "text": "ainda quer construir", "at": 161.90, "emphasis": true } ] }
+ "decupagem_aprovada": false,
+ "input": "input/video.mp4",
+ "transcript": "input/transcript.json",
+ "output": "output/seguros_sicredi.mp4",
+ "fps": 30,
+ "width": 1080,
+ "height": 1920,
+ "range": [
+  2.85,
+  165.45
+ ],
+ "remove": [
+  [
+   18.7,
+   24.05
   ],
-  "outro": { "duration": 2.6, "gap": 0.35, "transition": "wipe" }
+  [
+   35.7,
+   37.45
+  ],
+  [
+   73.68,
+   97.62
+  ],
+  [
+   104.55,
+   118.52
+  ],
+  [
+   132.15,
+   138.4
+  ],
+  [
+   152.4,
+   158.9
+  ]
+ ],
+ "silence": {
+  "noise_db": -32,
+  "min_dur": 0.3,
+  "pad": 0.1
+ },
+ "zoom": [
+  1,
+  1.1
+ ],
+ "sfx": {
+  "volume": 0.22,
+  "duck": true
+ },
+ "captions": {
+  "y": 0.88,
+  "max_chars": 22,
+  "max_words": 4
+ },
+ "segments": [
+  {
+   "type": "kinetic_scene",
+   "start": 5.3,
+   "end": 8.45,
+   "bg": "dark",
+   "transition_in": {
+    "kind": "squares",
+    "dur": 0.55
+   },
+   "transition_out": {
+    "kind": "wipe",
+    "dur": 0.55
+   },
+   "lines": [
+    {
+     "text": "Sua casa,",
+     "at": 5.34
+    },
+    {
+     "text": "sua empresa,",
+     "at": 6.44
+    },
+    {
+     "text": "seu barracão.",
+     "at": 7.6,
+     "emphasis": true
+    }
+   ]
+  },
+  {
+   "type": "alert_card",
+   "start": 9.1,
+   "end": 15.1,
+   "y": 0.56,
+   "tag": "Alerta",
+   "title": "El Niño",
+   "body": "Em questão de minutos",
+   "shake_at": 10.56
+  },
+  {
+   "type": "kinetic_scene",
+   "start": 16.9,
+   "end": 24.07,
+   "bg": "green",
+   "y": 0.36,
+   "transition_in": {
+    "kind": "iris",
+    "dur": 0.5
+   },
+   "transition_out": {
+    "kind": "none",
+    "dur": 0.5
+   },
+   "lines": [
+    {
+     "text": "Solução",
+     "at": 17.12,
+     "emphasis": true,
+     "size": 150
+    },
+    {
+     "text": "perfeita pra você",
+     "at": 17.64
+    }
+   ]
+  },
+  {
+   "type": "tiles_scene",
+   "start": 24.08,
+   "end": 30,
+   "title": "Seguros Sicredi",
+   "title_at": 24.3,
+   "transition_in": {
+    "kind": "slide",
+    "dur": 0.55
+   },
+   "transition_out": {
+    "kind": "squares",
+    "dur": 0.55
+   },
+   "tiles": [
+    {
+     "label": "Residencial",
+     "at": 24.8,
+     "tone": "green"
+    },
+    {
+     "label": "Patrimonial",
+     "at": 25.7,
+     "tone": "mid"
+    },
+    {
+     "label": "Rural",
+     "at": 26.46,
+     "tone": "dark"
+    }
+   ]
+  },
+  {
+   "type": "ui_card",
+   "variant": "slider",
+   "start": 38.4,
+   "end": 41.95,
+   "title": "Clima",
+   "chip": "C",
+   "labels": [
+    "Controlar",
+    "Proteger"
+   ],
+   "stages": [
+    {
+     "at": 38.86,
+     "value": 0.08,
+     "dur": 0.4
+    },
+    {
+     "at": 41.18,
+     "value": 1,
+     "dur": 0.5
+    }
+   ]
+  },
+  {
+   "type": "checklist_card",
+   "start": 50.3,
+   "end": 55.4,
+   "y": 0.47,
+   "title": "Proteção contra",
+   "items": [
+    {
+     "text": "Raio",
+     "at": 51.26
+    },
+    {
+     "text": "Explosão",
+     "at": 51.92
+    },
+    {
+     "text": "Incêndio",
+     "at": 52.88
+    },
+    {
+     "text": "Danos elétricos",
+     "at": 53.98
+    }
+   ]
+  },
+  {
+   "type": "kinetic_scene",
+   "start": 65.95,
+   "end": 69.9,
+   "bg": "dark",
+   "transition_in": {
+    "kind": "squares",
+    "dur": 0.55
+   },
+   "transition_out": {
+    "kind": "iris",
+    "dur": 0.55
+   },
+   "lines": [
+    {
+     "text": "O tão temido",
+     "at": 66.02
+    },
+    {
+     "text": "vendaval",
+     "at": 67.1,
+     "emphasis": true,
+     "size": 150
+    }
+   ]
+  },
+  {
+   "type": "phone_float",
+   "start": 118.55,
+   "end": 123.7,
+   "title": "Assistência 24h",
+   "subtitle": "Disponível",
+   "value": "24 horas",
+   "rows": [
+    "Chaveiro",
+    "Eletricista",
+    "Encanador",
+    "Outras assistências"
+   ]
+  },
+  {
+   "type": "ui_card",
+   "variant": "stat",
+   "start": 138.42,
+   "end": 142.1,
+   "title": "Proteção a partir de",
+   "value": 37,
+   "prefix": "R$ ",
+   "caption": "por mês",
+   "count_dur": 0.8
+  },
+  {
+   "type": "split",
+   "start": 143.42,
+   "end": 152.38
+  },
+  {
+   "type": "ui_card",
+   "variant": "timeline",
+   "start": 143.5,
+   "end": 152.38,
+   "y": 0.5,
+   "h": 620,
+   "items": [
+    {
+     "at": 143.8,
+     "text": "Vá até a agência Sicredi"
+    },
+    {
+     "at": 146.58,
+     "text": "Leve o seu patrimônio"
+    },
+    {
+     "at": 150.42,
+     "text": "Cotação ajustada a você"
+    }
+   ]
+  },
+  {
+   "type": "kinetic_scene",
+   "start": 158.92,
+   "end": 163.35,
+   "bg": "green",
+   "y": 0.28,
+   "transition_in": {
+    "kind": "wipe",
+    "dur": 0.55
+   },
+   "transition_out": {
+    "kind": "squares",
+    "dur": 0.55
+   },
+   "lines": [
+    {
+     "text": "Proteger seu patrimônio",
+     "at": 159.2
+    },
+    {
+     "text": "é cuidar do que você",
+     "at": 160.5
+    },
+    {
+     "text": "ainda quer construir",
+     "at": 161.9,
+     "emphasis": true
+    }
+   ]
+  }
+ ],
+ "outro": {
+  "duration": 2.6,
+  "gap": 0.35,
+  "transition": "wipe"
+ }
 }
