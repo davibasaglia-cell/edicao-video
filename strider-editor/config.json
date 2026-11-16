@@ -5,7 +5,7 @@
   "fps": 30,
   "width": 1080,
   "height": 1920,
-  "range": [1.6, 177.6],
+  "range": [1.6, 246.9],
   "remove": [],
   "silence": { "noise_db": -30, "min_dur": 0.3, "pad": 0.12 },
   "zoom": [1.0, 1.12],
@@ -39,7 +39,7 @@
     { "type": "switch_toggle", "start": 47.6, "end": 50.4, "hide_captions": true,
       "label": "APOIO", "on_at": 48.16, "line": "FICA MUITO MAIS", "big": "FÁCIL", "big_at": 49.08 },
 
-    { "type": "stories_bar", "start": 59.9, "end": 66.5, "hide_captions": true,
+    { "type": "stories_bar", "start": 59.9, "end": 66.5, "hide_captions": true, "handle": "@clinicaaurea.ocaucu",
       "small": "FORMULAÇÃO DE", "big": "STORIES", "big_at": 62.02, "chip": "OFERTAR MAIS", "chip_at": 64.32 },
 
     { "type": "question_bar", "start": 66.7, "end": 73.0, "num": 2,
@@ -67,8 +67,30 @@
     { "type": "question_bar", "start": 150.7, "end": 161.0, "num": 4,
       "question": "QUAL FOI O MAIOR SALTO?" },
 
-    { "type": "float_up", "start": 171.7, "end": 999, "hide_captions": true,
+    { "type": "float_up", "start": 171.7, "end": 177.6, "hide_captions": true,
       "words": [ { "text": "MAIS", "at": 172.66 }, { "text": "LEVE", "at": 173.12 } ],
-      "line": "NO NOSSO DIA A DIA", "line_at": 175.48 }
+      "line": "NO NOSSO DIA A DIA", "line_at": 175.48 },
+
+    { "type": "padlock_price", "start": 197.9, "end": 205.0, "hide_captions": true,
+      "top": "VALORES DOS PROCEDIMENTOS", "lock_at": 202.12, "big": "BLOQUEIO", "small": "DE AUMENTAR PREÇO", "small_at": 203.1 },
+
+    { "type": "signpost", "start": 205.36, "end": 210.6, "hide_captions": true,
+      "title": "CAPTAÇÃO?", "title_at": 206.16,
+      "arrows": [ { "text": "TRÁFEGO", "at": 207.6 }, { "text": "TREINAMENTO\nDE VENDAS", "at": 209.14, "highlight": true } ] },
+
+    { "type": "compass", "start": 221.6, "end": 226.1, "hide_captions": true,
+      "top": "QUAL O CAMINHO?", "lock_at": 224.78, "big": "DIRECIONAMENTO" },
+
+    { "type": "chat_notify", "start": 228.9, "end": 234.6, "hide_captions": true,
+      "messages": [ { "text": "CONTEM CONOSCO", "at": 229.48 }, { "text": "MANDEM MENSAGEM", "at": 231.22 },
+                    { "text": "À DISPOSIÇÃO", "at": 233.22, "highlight": true, "check": true } ] },
+
+    { "type": "bar_growth", "start": 234.6, "end": 242.12, "hide_captions": true,
+      "bars": [ { "label": "VOCÊS", "value": 0.55, "at": 237.22 }, { "label": "A CLÍNICA", "value": 1.0, "at": 239.78 } ],
+      "stamp": "DIA A DIA", "stamp_at": 241.48 },
+
+    { "type": "broadcast_close", "start": 242.12, "end": 999, "hide_captions": true,
+      "line1": "TRABALHO MUITO BOM", "line1_at": 242.78, "line2": "AS PESSOAS PRECISAM SABER", "line2_at": 244.42,
+      "handle": "@clinicaaurea.ocaucu", "handle_at": 245.5 }
   ]
 }

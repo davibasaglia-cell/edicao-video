@@ -2,11 +2,11 @@ const U = require('../utils/canvas_utils');
 const F = require('../utils/fx');
 const X = require('../utils/fx2');
 
-// "Ficou uma coisa mais leve": encerramento. Bolhas sobem devagar, as palavras sobem flutuando
+// "Ficou uma coisa mais leve": Bolhas sobem devagar, as palavras sobem flutuando
 // e balançam como se não tivessem peso; "no nosso dia a dia" assenta com um traço laranja desenhado.
 function floatUp(ctx, seg, t, W, H) {
   const local = t - seg.outStart;
-  const fade = U.clamp(local / 0.3);
+  const fade = Math.min(U.clamp(local / 0.3), U.clamp((seg.outEnd - t) / 0.2));
   const cy = H * (seg.y || 0.6);
   ctx.save();
   ctx.globalAlpha = fade;

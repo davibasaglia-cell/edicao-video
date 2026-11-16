@@ -49,6 +49,12 @@ const renderers = {
   magnifier: require('./renderers/magnifier'),
   before_after: require('./renderers/before_after'),
   float_up: require('./renderers/float_up'),
+  padlock_price: require('./renderers/padlock_price'),
+  signpost: require('./renderers/signpost'),
+  compass: require('./renderers/compass'),
+  chat_notify: require('./renderers/chat_notify'),
+  bar_growth: require('./renderers/bar_growth'),
+  broadcast_close: require('./renderers/broadcast_close'),
 };
 
 const BW = 'colorchannelmixer=.3:.4:.3:0:.3:.4:.3:0:.3:.4:.3';
