@@ -1,0 +1,45 @@
+{
+  "input": "input/IMG_3008.MOV",
+  "transcript": "input/transcript_img3008.json",
+  "output": "output/video_strider.mp4",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "range": [25.95, 94.3],
+  "remove": [[75.40, 78.25]],
+  "silence": { "noise_db": -32, "min_dur": 0.3, "pad": 0.1 },
+  "zoom": [1.0, 1.12],
+  "tail_hold": 0.8,
+  "sfx": { "volume": 0.22, "duck": true },
+  "captions": { "y": 0.8, "max_chars": 18, "max_words": 4 },
+  "segments": [
+    { "type": "logo", "start": 25.95, "end": 28.0, "title": "TREINAMENTO COMERCIAL", "subtitle": "RECIPROCIDADE", "y": 0.07 },
+
+    { "type": "card_hook", "start": 28.0, "end": 30.3, "lines": ["O QUE O", "BOLO", "FAZ?"], "emphasis": [1], "emphasis_at": 28.24, "bw": true, "hide_captions": true },
+
+    { "type": "gauge", "start": 35.75, "end": 38.45, "label": "PESO DA DECISÃO",
+      "stages": [ { "at": 35.75, "needle": 0.25, "sub": "DECISÃO" }, { "at": 35.95, "needle": 0.95, "sub": "PESADA" } ] },
+
+    { "type": "impact_text", "start": 38.45, "end": 39.8, "bw": true, "color": "#FFD700", "hide_captions": true,
+      "lines": [ { "text": "A DECISÃO", "at": 38.5 }, { "text": "MAIS", "at": 39.08 }, { "text": "DOCE", "at": 39.3, "boom": true } ] },
+
+    { "type": "gauge", "start": 39.8, "end": 42.3, "label": "PESO DA DECISÃO",
+      "stages": [ { "at": 39.8, "needle": 0.95, "sub": "PESADA" }, { "at": 39.98, "needle": 0.15, "sub": "MAIS LEVE" } ] },
+
+    { "type": "checkbox_card", "start": 46.6, "end": 65.35, "title": "QUANDO USAR O BOLO",
+      "items": [
+        { "text": "AVALIAÇÃO DE PROCEDIMENTO CARO", "at": 48.4 },
+        { "text": "INTERESSE EM OUTRO PROCEDIMENTO", "at": 55.62 },
+        { "text": "NA HORA DE PASSAR O PREÇO", "at": 63.66, "highlight": true }
+      ] },
+
+    { "type": "impact_text", "start": 67.4, "end": 70.1, "bw": true, "color": "#FFD700", "hide_captions": true,
+      "lines": [ { "text": "ISSO", "at": 67.46 }, { "text": "É", "at": 67.66 }, { "text": "OURO", "at": 68.26, "boom": true, "max": 360 } ] },
+
+    { "type": "card_hook", "start": 78.9, "end": 82.2, "lines": ["DEIXE SEMPRE UM", "DOCE", "ARMAZENADO"], "emphasis": [1], "bw": true, "hide_captions": true },
+
+    { "type": "hierarchy", "start": 83.36, "end": 84.75, "small": "TEM QUE SER", "big": "FÁCIL", "big_at": 83.84, "small2": "DE COMER", "small2_at": 84.22, "y": 0.5, "bw": true, "hide_captions": true },
+
+    { "type": "closer", "start": 92.0, "end": 999, "line1": "ESSA DICA É", "line2": "TOP", "line2_at": 93.56, "overlay_color": "rgba(200,140,20,0.35)", "hide_captions": true }
+  ]
+}
