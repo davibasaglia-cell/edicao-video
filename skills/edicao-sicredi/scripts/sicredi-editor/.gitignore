@@ -1,0 +1,6 @@
+node_modules/
+input/*.MOV
+input/*.mov
+input/*.mp4
+output/
+frames/

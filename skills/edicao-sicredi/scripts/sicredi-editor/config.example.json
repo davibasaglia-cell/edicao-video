@@ -1,0 +1,35 @@
+{
+  "input": "input/video.MOV",
+  "transcript": "input/transcript.json",
+  "output": "output/video_sicredi.mp4",
+  "fps": 30, "width": 1080, "height": 1920,
+  "range": [0.0, 45.0],
+  "remove": [],
+  "silence": { "noise_db": -32, "min_dur": 0.3, "pad": 0.1 },
+  "zoom": [1.0, 1.1],
+  "sfx": { "volume": 0.22, "duck": true },
+  "captions": { "y": 0.88, "max_chars": 22, "max_words": 4 },
+
+  "segments": [
+    { "type": "ui_card", "variant": "slider", "start": 1.0, "end": 4.0,
+      "title": "Tempo para abrir a conta", "labels": ["1 min", "5 min", "10 min"],
+      "stages": [ { "at": 1.4, "value": 0.15 } ] },
+
+    { "type": "split", "start": 4.4, "end": 9.5 },
+    { "type": "ui_card", "variant": "timeline", "start": 4.6, "end": 9.5, "y": 0.5, "h": 620,
+      "items": [ { "at": 5.0, "text": "Abrir a conta" }, { "at": 6.6, "text": "Escolher o investimento" }, { "at": 8.0, "text": "Acompanhar no app" } ] },
+
+    { "type": "kinetic_scene", "start": 11.0, "end": 15.0, "fan": 3,
+      "transition_in": { "kind": "squares", "dur": 0.6 }, "transition_out": { "kind": "iris", "dur": 0.6 },
+      "lines": [ { "text": "Resultado em", "at": 11.4 }, { "text": "5 minutos", "at": 12.0, "emphasis": true } ] },
+
+    { "type": "tiles_scene", "start": 17.0, "end": 21.0, "title": "Tudo no seu ritmo",
+      "tiles": [ { "label": "Conta", "at": 17.6 }, { "label": "Pix", "at": 18.0 }, { "label": "Cartão", "at": 18.4 } ] },
+
+    { "type": "ui_card", "variant": "stat", "start": 22.0, "end": 25.0, "title": "Rendimento", "value": 12480, "prefix": "R$ ", "caption": "no mês" },
+
+    { "type": "phone_float", "start": 26.0, "end": 29.5, "title": "Olá, cooperado" }
+  ],
+
+  "outro": { "duration": 2.6, "gap": 0.3, "transition": "wipe" }
+}
