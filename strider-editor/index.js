@@ -17,26 +17,9 @@ const TAKES = !!TAKES_ARG;
 const TAKES_ONLY = TAKES_ARG && TAKES_ARG.includes('=') ? TAKES_ARG.split('=')[1].split(',').map(Number) : null;
 const R = p => path.isAbsolute(p) ? p : path.join(ROOT, p);
 
-const renderers = {
-  card_hook: require('./renderers/card_hook'),
-  impact_text: require('./renderers/impact_text'),
-  subtitle: require('./renderers/subtitle'),
-  checkbox_card: require('./renderers/checkbox_card'),
-  gauge: require('./renderers/gauge'),
-  hierarchy: require('./renderers/hierarchy'),
-  logo: require('./renderers/logo'),
-  closer: require('./renderers/closer'),
-  lower_third: require('./renderers/lower_third'),
-  kinetic_words: require('./renderers/kinetic_words'),
-  heartbeat: require('./renderers/heartbeat'),
-  icon_chips: require('./renderers/icon_chips'),
-  flip_reveal: require('./renderers/flip_reveal'),
-  calendar_fill: require('./renderers/calendar_fill'),
-  brain_layers: require('./renderers/brain_layers'),
-  glitch_split: require('./renderers/glitch_split'),
-  counter_echo: require('./renderers/counter_echo'),
-  absorb_stamp: require('./renderers/absorb_stamp'),
-};
+// todos os arquivos de renderers/ (o nome do arquivo é o "type" no config)
+const renderers = {};
+for (const f of fs.readdirSync(path.join(ROOT, 'renderers'))) if (f.endsWith('.js')) renderers[f.replace('.js', '')] = require('./renderers/' + f);
 
 const BW = 'colorchannelmixer=.3:.4:.3:0:.3:.4:.3:0:.3:.4:.3';
 // iPhone grava HDR (HLG 10-bit) → tone-map para SDR bt709
