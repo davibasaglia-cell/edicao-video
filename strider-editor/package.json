@@ -1,10 +1,13 @@
 {
   "name": "strider-editor",
   "version": "1.0.0",
-  "description": "",
+  "description": "Edição estilo Strider em JavaScript (node-canvas + FFmpeg)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "takes": "node index.js --takes",
+    "render": "node index.js --skip-base",
+    "render:full": "node index.js",
+    "overlays": "node index.js --skip-base"
   },
   "keywords": [],
   "author": "",
