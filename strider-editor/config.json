@@ -29,7 +29,7 @@
       "small": "NA MAIORIA DAS VEZES", "small_at": 42.0, "old": "O VALOR", "old_at": 42.96, "strike_at": 43.45,
       "new_small": "É A", "new_lines": ["FORMA DE", "PAGAMENTO"], "swap_at": 44.5 },
 
-    { "type": "card_installments", "start": 61.25, "end": 70.65, "y": 0.36,
+    { "type": "card_installments", "start": 61.25, "end": 70.65, "y": 0.33,
       "entry_label": "VALOR DE ENTRADA", "entry_at": 61.84, "card_at": 67.7,
       "counts": [ { "text": "12X", "at": 68.96 }, { "text": "50X", "at": 69.52 } ], "count_label": "NO CARTÃO" },
 

@@ -65,7 +65,7 @@ function cardInstallments(ctx, seg, t, W, H) {
     ctx.restore();
     // odômetro de parcelas
     const counts = seg.counts;
-    const ox = W / 2, oy = cyy + ch / 2 + 190, boxH = 220;
+    const ox = W / 2, oy = cyy + ch / 2 + 170, boxH = 220;
     const cur = counts.filter(c => t >= c.atOut).length - 1;
     if (cur >= 0) {
       ctx.save();
@@ -78,7 +78,7 @@ function cardInstallments(ctx, seg, t, W, H) {
       F.strokeFill(ctx, c.text, ox, oy + (1 - rk) * boxH, U.COLORS.orange, 12);
       ctx.restore();
       ctx.font = U.font(800, 44); ctx.fillStyle = U.COLORS.white; ctx.globalAlpha = env * U.clamp((t - counts[0].atOut) / 0.2);
-      U.fillSpaced(ctx, seg.count_label || 'NO CARTÃO', ox, oy + 80, 8);
+      U.fillSpaced(ctx, seg.count_label || "NO CARTÃO", ox, oy + 68, 8);
     }
   }
   ctx.restore();
