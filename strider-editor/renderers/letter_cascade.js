@@ -51,9 +51,7 @@ function letterCascade(ctx, seg, t, W, H) {
 }
 letterCascade.sfx = s => {
   const at = s.wordAtOut ?? s.outStart, n = [...s.word].length, st = s.stagger || 0.035;
-  const ev = [{ type: 'whoosh', t: s.outStart - 0.1, gain: 0.6 }];
-  for (let i = 0; i < n; i += 3) ev.push({ type: 'tick', t: at + i * st + 0.2, gain: 1.6 });
-  ev.push({ type: 'boom', t: at + n * st + 0.15, gain: 0.8 });
-  return ev;
+  // só um whoosh + um boom leve: os ticks por letra empilhavam e passavam da voz
+  return [{ type: 'whoosh', t: s.outStart - 0.1, gain: 0.45 }, { type: 'boom', t: at + n * st + 0.15, gain: 0.35 }];
 };
 module.exports = letterCascade;
