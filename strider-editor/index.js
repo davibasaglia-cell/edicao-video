@@ -207,7 +207,8 @@ async function main() {
   if (TAKES) {
     // 7a. Takes: um clipe curto por animação (meia resolução, com áudio) + um reel com todos, para aprovação
     const takesDir = path.join(outDir, 'takes');
-    fs.rmSync(takesDir, { recursive: true, force: true });
+    // --takes refaz todos; --takes=3,7 refaz só esses e mantém os demais no reel
+    if (!TAKES_ONLY) fs.rmSync(takesDir, { recursive: true, force: true });
     fs.mkdirSync(takesDir, { recursive: true });
     const list = segs.map((s, i) => ({ s, i })).filter(({ i }) => !TAKES_ONLY || TAKES_ONLY.includes(i + 1));
     const files = [];
@@ -219,7 +220,8 @@ async function main() {
       files.push(file);
     }
     const listFile = path.join(takesDir, 'list.txt');
-    fs.writeFileSync(listFile, files.map(f => `file '${f}'`).join('\n'));
+    const all = fs.readdirSync(takesDir).filter(f => /^take_\d+_.*\.mp4$/.test(f)).sort().map(f => path.join(takesDir, f));
+    fs.writeFileSync(listFile, all.map(f => `file '${f}'`).join('\n'));
     const reel = path.join(outDir, 'takes_reel.mp4');
     await run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', listFile, '-c', 'copy', '-movflags', '+faststart', reel]);
     console.log(`✅ Takes em ${takesDir}\n✅ Reel com todos os takes: ${reel}`);
